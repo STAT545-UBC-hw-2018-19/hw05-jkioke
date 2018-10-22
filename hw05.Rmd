@@ -1,0 +1,48 @@
+---
+title: "hw-05"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gapminder)
+library(ggplot2)
+library(plotly)
+library(tidyverse)
+```
+
+##Factors
+Factors, like other vectors, can be manipulated with `dplyr` functions like arrange(). However, applying the arrange() function to factors doesn't alter their position in a `ggplot` figure. If we wanted to visualize life expectancy in Asian countries in 2007, the figure looks the same regardless of whether the data frame is arranged by life expectancy or country name. These changes only apply to the tabulated data.
+
+
+```{r}
+countries <- gapminder %>% 
+  filter(continent == "Americas", year == 1997)
+
+countries %>% 
+  arrange(lifeExp) %>% 
+  ggplot(aes(lifeExp, country)) +
+  geom_point()
+
+#or
+countries %>% 
+  arrange(country) %>% 
+  ggplot(aes(lifeExp, country)) +
+  geom_point()
+```
+
+Using the `forcats` package, factors can be manipulated in some useful ways. 
+
+```{r}
+gapminder$county
+
+
+countries %>% 
+  mutate(fct_shuffle(country)) %>% 
+  ggplot(aes(lifeExp, country)) +
+  geom_point()
+  
+  
+```
+
+
