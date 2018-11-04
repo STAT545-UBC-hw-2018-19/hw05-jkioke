@@ -12,6 +12,8 @@ library(tidyverse)
 ```
 
 ##Factors
+
+###Part 1
 Factors, like other vectors, can be manipulated with `dplyr` functions like arrange(). However, applying the arrange() function to factors doesn't alter their position in a `ggplot` figure. If we wanted to visualize life expectancy in Asian countries in 2007, the figure looks the same regardless of whether the data frame is arranged by life expectancy or country name. These changes only apply to the tabulated data.
 
 
@@ -35,7 +37,7 @@ americas_1997 %>%
   geom_point()
 ```
 
-Using the `forcats` package, factors can be manipulated in some useful ways. We can reorder the above figure to better represent the data (order)
+Using the `forcats` package, factors can be manipulated in some useful ways. We can reorder the above figure to better represent the data.
 
 ```{r}
 
@@ -47,7 +49,7 @@ americas_1997 %>%
   
 ```
 
-We can see that, even with the countries outside of the Americas filtered off, the levels corresponding to those countries are still in the factor.
+We can see that, even with the countries outside of the Americas filtered off, the levels corresponding to those countries are still represented in the factor.
 ```{r}
 americas_1997$country %>% 
   nlevels()
@@ -55,7 +57,7 @@ americas_1997$country %>%
   head()
 ```
 
-We can drop the unused levels
+We can drop the unused levels using fct_drop() to retain levels in the factor "country" and the factor "continent" that pertain to the Americas.
 
 ```{r}
 americas_1997 %>% 
@@ -64,3 +66,45 @@ americas_1997 %>%
   str()
 ```
 
+
+
+###Part 2 
+For writing and re-reading a data set, we will use the gapminder data with its levels reordered and dropped as they were in Part 1.
+
+
+```{r}
+reordered_americas_1997 <- americas_1997 %>% 
+  mutate(country = fct_drop(country)) %>% 
+  mutate(continent = fct_drop(continent)) %>% 
+  mutate(country = fct_reorder(country, gdpPercap))
+
+```
+Then we need to write reordere_americas_1997 to a csv
+
+```{r}
+write_csv(reordered_americas_1997, "americas_1997.csv")
+```
+
+and read it back into RStudio to see if reordered factors and dropped levels are still reordered and dropped.
+
+```{r}
+csv_americas_1997 <- read_csv("americas_1997.csv")
+```
+
+Comparing csv_americas_1997 and reordered_americas_1997
+
+```{r}
+csv_americas_1997 %>% 
+  str()
+reordered_americas_1997 %>% 
+  str()
+
+identical(csv_americas_1997, reordered_americas_1997)
+```
+The 2 dataframes diverged when reordered_americas_1997 was written to a csv and read back into RStudio. The factors (country and continent) became character vectors and are no longer identical to the original vectors. Numeric vectors were unaffected in the process and remain identical.
+
+```{r}
+identical(csv_americas_1997$gdpPercap, reordered_americas_1997$gdpPercap)
+```
+
+###Part 3
