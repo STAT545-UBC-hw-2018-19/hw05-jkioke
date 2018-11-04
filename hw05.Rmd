@@ -58,7 +58,7 @@ americas_1997$country %>%
 We can drop the unused levels
 
 ```{r}
-americas_1997_americas_1997 %>% 
+americas_1997 %>% 
   mutate(country = fct_drop(country)) %>% 
   mutate(continent = fct_drop(continent)) %>% 
   str()
