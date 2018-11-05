@@ -1,6 +1,7 @@
 ---
 title: "hw-05"
-output: github_document
+output: html_document
+
 ---
 
 ```{r setup, include=FALSE}
@@ -9,6 +10,7 @@ library(gapminder)
 library(ggplot2)
 library(plotly)
 library(tidyverse)
+library(scales)
 ```
 
 ##Factors
@@ -79,7 +81,7 @@ reordered_americas_1997 <- americas_1997 %>%
   mutate(country = fct_reorder(country, gdpPercap))
 
 ```
-Then we need to write reordere_americas_1997 to a csv
+Then we need to write reordered_americas_1997 to a csv
 
 ```{r}
 write_csv(reordered_americas_1997, "americas_1997.csv")
@@ -91,7 +93,7 @@ and read it back into RStudio to see if reordered factors and dropped levels are
 csv_americas_1997 <- read_csv("americas_1997.csv")
 ```
 
-Comparing csv_americas_1997 and reordered_americas_1997
+Comparing csv_americas_1997 and reordered_americas_1997:
 
 ```{r}
 csv_americas_1997 %>% 
@@ -108,3 +110,49 @@ identical(csv_americas_1997$gdpPercap, reordered_americas_1997$gdpPercap)
 ```
 
 ###Part 3
+
+####Visualization of figures
+
+Looking at the figure from Part 1, it's evident that it could communicate more information with its visual presentation.
+```{r}
+americas_1997 %>% 
+    mutate(country = fct_reorder(country, gdpPercap)) %>% 
+    ggplot(aes(gdpPercap, country)) + 
+    geom_point()
+```
+
+By adjusting certain elements, the figure presents more information to the reader about the dataset.
+
+```{r}
+
+(americas_plot <- americas_1997 %>% 
+    mutate(country = fct_reorder(country, gdpPercap)) %>% 
+    ggplot(aes(gdpPercap, country)) + 
+    geom_point(aes(colour = lifeExp, size = pop)) +
+    scale_x_continuous(labels = dollar_format()) +
+    scale_color_distiller(palette = "Reds") +
+    labs(x = "GDP Per Capita",
+       y = "Country",
+       title = "GDP per capita in the Americas"
+  ) +
+  theme_bw())
+
+
+  
+```
+
+####Plotly
+Using `plotly` allows a figure to have more interactivity and displayable data. By making the above figure a plotly graph, we can see the GDP per capita, population, and life expectancy of each data point just by hovering over it. If the graph was more crowded with data, plotly allows for zooming in on particular portions of the graph. 
+
+```{r}
+ggplotly(americas_plot)
+```
+
+###Saving Figures
+Figures can be saved as separate files using the `ggsave` function.
+```{r}
+ggsave("americas_1997.png", americas_plot)
+```
+
+
+
