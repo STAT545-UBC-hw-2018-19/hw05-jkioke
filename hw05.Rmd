@@ -1,7 +1,7 @@
 ---
 title: "hw-05"
-output: html_document
-
+output: github_document
+ 
 ---
 
 ```{r setup, include=FALSE}
@@ -145,7 +145,7 @@ By adjusting certain elements, the figure presents more information to the reade
 Using `plotly` allows a figure to have more interactivity and displayable data. By making the above figure a plotly graph, we can see the GDP per capita, population, and life expectancy of each data point just by hovering over it. If the graph was more crowded with data, plotly allows for zooming in on particular portions of the graph. 
 
 ```{r}
-ggplotly(americas_plot)
+#ggplotly(americas_plot)     commenting for presentation on github
 ```
 
 ###Saving Figures
